@@ -72,10 +72,10 @@ function position_search() {
 	local AREA_CODE="$4"
 	local PAGE=$5
 	local TMP_RESPONSE=$(mktemp)
-	set -x
+
 	while :
 	do
-		curl -sS -D - -t 3 -m 5 \
+		curl --http1.0 -sS -D - -t 3 -m 5 \
 			"https://search.51job.com/list/${AREA_CODE},000000,0000,00,9,99,${KEY_WORDS},2,${PAGE}.html?lang=c&postchannel=0000&workyear=99&cotype=99&degreefrom=99&jobterm=99&companysize=99&ord_field=0&dibiaoid=0&line=&welfare=" \
 			-H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4688.0 Safari/537.36 Edg/97.0.1069.0' \
 			-H "Accept: text/html;charset=gbk;" \
@@ -93,7 +93,7 @@ function position_search() {
 
 		# 转码并格式化
 		iconv -f GBK -t UTF-8 <"${TMP_RESPONSE}" \
-			| tr -d '\n|\r' | sed "s/^.*window.__SEARCH_RESULT__\ =\ {/{/g" | jq -r '.' 2>/dev/null \
+			| tr -d '\n|\r' | awk -F 'window.__SEARCH_RESULT__ = ' '{print $2}' | jq -r '.' 2>/dev/null \
 			>"${RESP_BODY}"
 		if [[ ! -f "${RESP_BODY}" || -z "${RESP_BODY}" ]]; then continue; fi
 
@@ -165,8 +165,7 @@ function multi_thread_search() {
 		{
 		position_search "/tmp/${j}_${Time_Stamp}_response_header_search" "/tmp/search_result/${j}_${Time_Stamp}_resp_search.json" "${KEY_WORDS}" "${AREA_CODE}" ${i}
 
-		CURR_PAGE=$(cat "/tmp/search_result/${j}_${Time_Stamp}_resp_search.json" | tr -d '\n|\r' \
-			| sed "s/^.*window.__SEARCH_RESULT__\ =\ {/{/g" | jq -r '.curr_page' 2>/dev/null)
+		CURR_PAGE=$(cat "/tmp/search_result/${j}_${Time_Stamp}_resp_search.json" | jq -r '.curr_page' 2>/dev/null)
 		echo >&3
 		if [[ ${CURR_PAGE} -eq ${TOTAL_PAGE} ]]; then
 			echo 'END' >&3
