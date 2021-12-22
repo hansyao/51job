@@ -91,7 +91,7 @@ function position_search() {
 		fi
 
 		# 转码并格式化
-		iconv -f gb18030 -t UTF-8 <"${TMP_RESPONSE}" \
+		echo -e "${TMP_RESPONSE}" \
 			| tr -d '\n|\r' | awk -F 'window.__SEARCH_RESULT__ = ' '{print $2}' | jq -r '.' 2>/dev/null \
 			>"${RESP_BODY}"
 		if [[ ! -f "${RESP_BODY}" || -z "${RESP_BODY}" ]]; then continue; fi
