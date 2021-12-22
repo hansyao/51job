@@ -72,7 +72,7 @@ function position_search() {
 	local AREA_CODE="$4"
 	local PAGE=$5
 	local TMP_RESPONSE=$(mktemp)
-
+	set -x
 	while :
 	do
 		curl -sS -D - -t 3 -m 5 \
