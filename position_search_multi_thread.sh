@@ -81,7 +81,6 @@ function position_search() {
 			-H "Accept: text/html;charset=gbk;" \
 			-H 'Referer: https://www.51job.com/' \
 			-o "${TMP_RESPONSE}"  \
-			--compressed \
 			| tr -d '\r' \
 			>"${RESP_HEADER}"
 
