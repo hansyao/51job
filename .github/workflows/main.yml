@@ -24,7 +24,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      with:
+        token: ${{ secrets.GH_TOKEN }}
       # Runs a single command using the runners shell
       - name: 爬取51job职位并转换为excel文件
         run: |
