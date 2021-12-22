@@ -27,6 +27,8 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: 爬取51job职位并转换为excel文件
-        run: ./position_search_multi_thread.sh
+        run: |
+        sed -i 's/\/tmp\///g' position_search_multi_thread.sh
+        ./position_search_multi_thread.sh
 
 
