@@ -72,13 +72,13 @@ function position_search() {
 	local AREA_CODE="$4"
 	local PAGE=$5
 	local TMP_RESPONSE=$(mktemp)
-	set -x
+
 	while :
 	do
 		curl --http1.0 -sS -D - -t 3 -m 5 \
 			"https://search.51job.com/list/${AREA_CODE},000000,0000,00,9,99,${KEY_WORDS},2,${PAGE}.html?lang=c&postchannel=0000&workyear=99&cotype=99&degreefrom=99&jobterm=99&companysize=99&ord_field=0&dibiaoid=0&line=&welfare=" \
 			-H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4688.0 Safari/537.36 Edg/97.0.1069.0' \
-			-H "Accept: text/html;charset=gbk;" \
+			-H "Accept-Language: zh-CN,zh;q=0.9,en;q=0.8" \
 			-H 'Referer: https://www.51job.com/' \
 			-o "${TMP_RESPONSE}"  \
 			| tr -d '\r' \
@@ -91,7 +91,7 @@ function position_search() {
 		fi
 
 		# 转码并格式化
-		iconv -f ISO-8859-1 -t UTF-8 <"${TMP_RESPONSE}" \
+		iconv -f GB18030 -t UTF-8 <"${TMP_RESPONSE}" \
 			| tr -d '\n|\r' | awk -F 'window.__SEARCH_RESULT__ = ' '{print $2}' | jq -r '.' 2>/dev/null \
 			>"${RESP_BODY}"
 		if [[ ! -f "${RESP_BODY}" || -z "${RESP_BODY}" ]]; then continue; fi
@@ -225,7 +225,6 @@ function main() {
 	rm -rf "${Result_Folder}"
 	End_Time=$(date -u +%s)
 	echo "查询完成，耗时 $((${End_Time} - ${Start_Time})) 秒	$(echo -e ${Pref_Time} | tr '_' ' ')(Asia/Shanghai)"
-
 }
 
 main "Software Engineer" "全国" "/tmp/search_result_final"
