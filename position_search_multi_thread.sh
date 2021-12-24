@@ -189,7 +189,7 @@ function multi_thread_search() {
 	local j=$4
 	local Tmp_Folder="/tmp/tmp"
 	local Tmp_Fifo_File
-	local Thread_Num=10
+	local Thread_Num=30
 	local i=0
 	local PAGES
 	local TOTAL_PAGE
@@ -260,7 +260,6 @@ function multi_thread_search() {
 	wait
 	echo
 	exec 3>&-
-	exec 4>&-
 
 	#合并
 	cat $(ls '/tmp/search_result' | sort -n | awk '{print ''"'"/tmp/search_result/"'"'' $0}') >"/tmp/search_result_final.json"
