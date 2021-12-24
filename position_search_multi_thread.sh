@@ -1,5 +1,7 @@
 #!/bin/bash
 
+Cookie='Cookie: guid=0def0d77d78e528db44f0305b99204ac; nsearch=jobarea%3D%26%7C%26ord_field%3D%26%7C%26recentSearch0%3D%26%7C%26recentSearch1%3D%26%7C%26recentSearch2%3D%26%7C%26recentSearch3%3D%26%7C%26recentSearch4%3D%26%7C%26collapse_expansion%3D; search=jobarea%7E%60000000%7C%21ord_field%7E%600%7C%21recentSearch0%7E%60000000%A1%FB%A1%FA000000%A1%FB%A1%FA0000%A1%FB%A1%FA00%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA9%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA0%A1%FB%A1%FAsoftware+engineer%A1%FB%A1%FA2%A1%FB%A1%FA1%7C%21; privacy=1640191694; _ujz=MTk3ODY4MA%3D%3D; slife=lowbrowser%3Dnot%26%7C%26lastlogindate%3D20211223%26%7C%26; ps=needv%3D0; 51job=cuid%3D197868%26%7C%26cusername%3DTgoRaG6vfeRIgflKe4BxAg%253D%253D%26%7C%26cpassword%3D%26%7C%26cname%3DHnozjCX4GBRU8rqijd96ZQ%253D%253D%26%7C%26cemail%3DBJDfUfkmlSXtlHayNXYEE7I5URugIPB61BMd1IDn24A%253D%26%7C%26cemailstatus%3D3%26%7C%26cnickname%3D%26%7C%26ccry%3D.0bQpNV4YUWxA%26%7C%26cconfirmkey%3DhaOHFP8p3hoyQ%26%7C%26cautologin%3D1%26%7C%26cenglish%3D0%26%7C%26sex%3D0%26%7C%26cnamekey%3DhaPrxcl5G089c%26%7C%26to%3D4bfb00f259a2039abeb5091933dff3ba61c356ed%26%7C%26'
+
 function urlencode() {
    local data
    if [ "$#" -eq 1 ]; then
@@ -10,6 +12,70 @@ function urlencode() {
 		|sed 's/|/%7c/g' |sed 's/+/%20/g')"
       fi
    fi
+}
+
+function get_hexxor(){
+	local s1=$1
+	local s2=$2
+
+	local _0x5a5d3b
+	local _0x401af1
+	local _0x105f59
+	local _0x189e2c
+
+	local Len=$(echo ${#s1})
+	local i=1
+
+	while [[ ${i} -le ${Len} ]]
+	do
+		_0x401af1=$((16#$(echo -e "${s1}" | cut -b ${i}-$((${i}+1)))))
+		_0x105f59=$((16#$(echo -e "${s2}" | cut -b ${i}-$((${i}+1)))))
+		_0x189e2c_10=$(( ${_0x401af1} ^ ${_0x105f59}))
+		_0x189e2c=$(( echo "obase=16" ; echo ${_0x189e2c_10} ) | bc | tr -d '\n' |cut -b -2)
+		
+		if [[ ${#_0x189e2c} -eq 1 ]]; then
+			_0x189e2c="0${_0x189e2c}"
+		fi
+
+		_0x5a5d3b=${_0x5a5d3b}${_0x189e2c}
+
+		i=$((${i}+2))
+	done
+	echo $_0x5a5d3b
+}
+
+function get_prototype() {
+	local arg1="$1"
+	local num
+	local Line
+	local _0x4da0dc
+	local _0x12605e
+
+	local _0x4b082b="0xf, 0x23, 0x1d, 0x18, 0x21, 0x10, 0x1, 0x26, 0xa, 0x9, \
+		0x13, 0x1f, 0x28, 0x1b, 0x16, 0x17, 0x19, 0xd, 0x6, 0xb, \
+		0x27, 0x12, 0x14, 0x8, 0xe, 0x15, 0x20, 0x1a, 0x2, 0x1e, \
+		0x7, 0x4, 0x11, 0x5, 0x3, 0x1c,0x22, 0x25, 0xc, 0x24"
+	while read Line
+	do
+		_0x4da0dc=$(echo -e "${arg1}" | cut -b $(printf "%d\n" "${Line}"))
+		_0x12605e="${_0x12605e}${_0x4da0dc}"
+	done <<<$(echo -e "${_0x4b082b}" | tr -d "\t| " | tr ',' '\n')
+	echo ${_0x12605e}
+}
+
+function get_arg1() {
+	local Header="$1"
+	local Body="$2"
+	local arg1
+	local acw_tc
+
+	acw_tc=$(cat "${Header}" 2>/dev/null | grep -i "^Set-Cookie:" | grep 'acw_tc=')
+	if [[ -n "${acw_tc}" ]]; then
+		arg1=$(cat "${Body}" | iconv -f GB18030 -t UTF-8 \
+		| grep "^[ ]*var[ ]*arg1=" | awk -F\' '{print $2}')
+	fi
+
+	echo "${arg1}"
 }
 
 function area_list() {
@@ -72,29 +138,44 @@ function position_search() {
 	local AREA_CODE="$4"
 	local PAGE=$5
 	local TMP_RESPONSE=$(mktemp)
+	local arg1
+	local acw_sc__v2=$(cat /tmp/acw_sc__v2 2>/dev/null)
+	local s1
 
 	while :
 	do
-		curl --http1.0 -sS -D - -t 3 -m 5 \
+		curl -sL -D - --http1.0 -t 3 -m 5 \
 			"https://search.51job.com/list/${AREA_CODE},000000,0000,00,9,99,${KEY_WORDS},2,${PAGE}.html?lang=c&postchannel=0000&workyear=99&cotype=99&degreefrom=99&jobterm=99&companysize=99&ord_field=0&dibiaoid=0&line=&welfare=" \
 			-H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4688.0 Safari/537.36 Edg/97.0.1069.0' \
+			-H "Accept: application/json" \
 			-H "Accept-Language: zh-CN,zh;q=0.9,en;q=0.8" \
-			-H 'Referer: https://www.51job.com/' \
+			-H "Cookie: acw_sc__v2=${acw_sc__v2}" \
 			-o "${TMP_RESPONSE}"  \
+			--compressed \
 			| tr -d '\r' \
 			>"${RESP_HEADER}"
 
-		if [[ $(cat "${RESP_HEADER}" | tr -d '\r' | grep -i "^HTTP/" | head -n 1 | awk '{print $2}') -ne 200 ]]; then
-			echo retry
+		if [[ $(cat "${RESP_HEADER}" | tr -d '\r' | grep -i "^HTTP/" | tail -n 1 | awk '{print $2}') -ne 200 ]]; then
+			echo -e "retry\\c"
+			rm -f "${RESP_HEADER}" "${TMP_RESPONSE}"
 			sleep 1
 			continue
 		fi
 
 		# 转码并格式化
-		iconv -f GB18030 -t UTF-8 <"${TMP_RESPONSE}" \
-			| tr -d '\n|\r' | awk -F 'window.__SEARCH_RESULT__ = ' '{print $2}' | jq -r '.' 2>/dev/null \
+		iconv -f GB18030 -t UTF-8 <"${TMP_RESPONSE}" | jq -r '.' 2>/dev/null \
 			>"${RESP_BODY}"
-		if [[ ! -f "${RESP_BODY}" || -z "${RESP_BODY}" ]]; then continue; fi
+		if [[ -z "$(cat "${RESP_BODY}" 2>/dev/null)" ]];then
+			# 检查是否有加密并解密获取acw_sc__v2令牌
+			arg1=$(get_arg1 "${RESP_HEADER}" "${TMP_RESPONSE}")
+			if [[ -z "${arg1}" ]]; then continue; fi
+
+			s1=$(get_prototype "${arg1}")
+			acw_sc__v2=$(get_hexxor "${s1}" '3000176000856006061501533003690027800375')
+			echo "${acw_sc__v2}" >'/tmp/acw_sc__v2'
+			rm -f "${RESP_HEADER}" "${TMP_RESPONSE}"
+			continue;
+		fi
 
 		break
 	done
@@ -131,7 +212,7 @@ function multi_thread_search() {
 	mkdir -p "${Tmp_Folder}"
 	Tmp_Fifo_File="${Tmp_Folder}/$$.fifo"
 	mkfifo "${Tmp_Fifo_File}"	# 新建一个fifo类型的文件
-	exec 3<>"${Tmp_Fifo_File}"	# 将fd3指向fifo类型
+	exec 3<>"${Tmp_Fifo_File}"	# 将fd3指向fifo类型作为多线程通信
 	rm -f "${Tmp_Fifo_File}"
 
 	# 根据线程总数量设置令牌个数
@@ -140,8 +221,10 @@ function multi_thread_search() {
 	mkdir -p '/tmp/search_result'
 
 	# 查看查询进度
+	i=0
 	while :
 	do
+		if [[ ${i} -gt 1800 ]]; then break; fi
 		PAGES=$(ls '/tmp/search_result' 2>/dev/null | wc -l)
 		PROGRESS=$(awk 'BEGIN{print int(100 * (("'${PAGES}'" / "'${TOTAL_PAGE}'")))}')
 		b=$(printf %${PROGRESS}s | tr ' ' '.')
@@ -153,6 +236,7 @@ function multi_thread_search() {
 		printf "%${PROGRESS}s %d%% %s \r" "${b}" "${PROGRESS}"
 
 		sleep 1
+		let i++
 	done&
 
 	i=1
@@ -176,6 +260,7 @@ function multi_thread_search() {
 	wait
 	echo
 	exec 3>&-
+	exec 4>&-
 
 	#合并
 	cat $(ls '/tmp/search_result' | sort -n | awk '{print ''"'"/tmp/search_result/"'"'' $0}') >"/tmp/search_result_final.json"
