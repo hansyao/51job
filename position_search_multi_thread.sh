@@ -1,7 +1,5 @@
 #!/bin/bash
 
-Cookie='Cookie: guid=0def0d77d78e528db44f0305b99204ac; nsearch=jobarea%3D%26%7C%26ord_field%3D%26%7C%26recentSearch0%3D%26%7C%26recentSearch1%3D%26%7C%26recentSearch2%3D%26%7C%26recentSearch3%3D%26%7C%26recentSearch4%3D%26%7C%26collapse_expansion%3D; search=jobarea%7E%60000000%7C%21ord_field%7E%600%7C%21recentSearch0%7E%60000000%A1%FB%A1%FA000000%A1%FB%A1%FA0000%A1%FB%A1%FA00%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA99%A1%FB%A1%FA9%A1%FB%A1%FA99%A1%FB%A1%FA%A1%FB%A1%FA0%A1%FB%A1%FAsoftware+engineer%A1%FB%A1%FA2%A1%FB%A1%FA1%7C%21; privacy=1640191694; _ujz=MTk3ODY4MA%3D%3D; slife=lowbrowser%3Dnot%26%7C%26lastlogindate%3D20211223%26%7C%26; ps=needv%3D0; 51job=cuid%3D197868%26%7C%26cusername%3DTgoRaG6vfeRIgflKe4BxAg%253D%253D%26%7C%26cpassword%3D%26%7C%26cname%3DHnozjCX4GBRU8rqijd96ZQ%253D%253D%26%7C%26cemail%3DBJDfUfkmlSXtlHayNXYEE7I5URugIPB61BMd1IDn24A%253D%26%7C%26cemailstatus%3D3%26%7C%26cnickname%3D%26%7C%26ccry%3D.0bQpNV4YUWxA%26%7C%26cconfirmkey%3DhaOHFP8p3hoyQ%26%7C%26cautologin%3D1%26%7C%26cenglish%3D0%26%7C%26sex%3D0%26%7C%26cnamekey%3DhaPrxcl5G089c%26%7C%26to%3D4bfb00f259a2039abeb5091933dff3ba61c356ed%26%7C%26'
-
 function urlencode() {
    local data
    if [ "$#" -eq 1 ]; then
@@ -207,7 +205,7 @@ function multi_thread_search() {
 		exit 1
 	fi
 	echo "查询条件: $(jq -r '.searched_condition' </tmp/search_result.json)"
-	echo -e "大约$((${TOTAL_PAGE} * 50 - 50))~$((${TOTAL_PAGE} * 50))条职位信息, 预计查询耗时$((${TOTAL_PAGE}/${Thread_Num}/3))秒"
+	echo -e "大约$((${TOTAL_PAGE} * 50 - 50))~$((${TOTAL_PAGE} * 50))条职位信息"
 
 	mkdir -p "${Tmp_Folder}"
 	Tmp_Fifo_File="${Tmp_Folder}/$$.fifo"
