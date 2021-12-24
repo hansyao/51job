@@ -120,11 +120,13 @@ function parse_orderlist_to_csv() {
 	local FILE_LIST_JSON="$1"
 	local FILE_LIST_CSV="$2"
 	local Area="$3"
-	jq -rn '["区域", "招聘条件", "行业", "公司规模", "是否有效", "职位", "公司名称", "薪资", "福利", "工作地点", "公司类型", "工作年限要求", "学历要求", "是否实习生", "发布日期", "职位网址"] as $fields | 
+	local Time_Stamp="$(TZ="Asia/Shanghai" date "+%F %H:%M:%S")"
+
+	jq -rn '["区域", "招聘条件", "行业", "公司规模", "是否有效", "职位", "公司名称", "薪资", "福利", "工作地点", "公司类型", "工作年限要求", "学历要求", "是否实习生", "发布日期", "职位网址", "查询时间戳"] as $fields | 
 	(
 		$fields,
 		($fields | map(length*"-")),
-		(inputs | .engine_jds[] | ["'${Area}'", (.attribute_text | join("|")), .companyind_text, .companysize_text, .effect, .job_title, .company_name, .providesalary_text, (.jobwelf_list | join("|")), .workarea_text, .companytype_text, .workyear, .degreefrom, .isIntern, .issuedate, .job_href])
+		(inputs | .engine_jds[] | ["'${Area}'", (.attribute_text | join("|")), .companyind_text, .companysize_text, .effect, .job_title, .company_name, .providesalary_text, (.jobwelf_list | join("|")), .workarea_text, .companytype_text, .workyear, .degreefrom, .isIntern, .issuedate, .job_href, "'"${Time_Stamp}"'"])
 	) | @csv' <"${FILE_LIST_JSON}" \
 		>"${FILE_LIST_CSV}"
 }
@@ -300,8 +302,8 @@ function main() {
 	done <<<$(echo -e "${Area}")
 
 	echo -e "合并查询结果并转换成xlsx格式"
-	Pref_Time=$(TZ='Asia/Shanghai' date | tr ' ' '_')
-	echo -e '"区域","招聘条件","行业","公司规模","是否有效","职位","公司名称","薪资","福利","工作地点","公司类型","工作年限要求","学历要求","是否实习生","发布日期","职位网址"' >"${Final_Result}_${Pref_Time}.csv"
+	Pref_Time=$(TZ='Asia/Shanghai' date | tr ' |:' '_')
+	echo -e '"区域","招聘条件","行业","公司规模","是否有效","职位","公司名称","薪资","福利","工作地点","公司类型","工作年限要求","学历要求","是否实习生","发布日期","职位网址","查询时间戳"' >"${Final_Result}_${Pref_Time}.csv"
 	cat $(ls "${Result_Folder}"  | sort -n | awk '{print ''"'"${Result_Folder}/"'"'' $0}') >>"${Final_Result}_${Pref_Time}.csv"
 	./csv2xlsx -o "${Final_Result}_${Pref_Time}.xlsx" "${Final_Result}_${Pref_Time}.csv"
 	rm -rf "${Result_Folder}"
@@ -309,4 +311,4 @@ function main() {
 	echo "查询完成，耗时 $((${End_Time} - ${Start_Time})) 秒	$(echo -e ${Pref_Time} | tr '_' ' ')(Asia/Shanghai)"
 }
 
-main "Software Engineer" "全国" "/tmp/search_result_final"
+main "Software Engineer" "上海" "/tmp/search_result_final"
