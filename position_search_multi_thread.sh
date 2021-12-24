@@ -189,7 +189,7 @@ function multi_thread_search() {
 	local j=$4
 	local Tmp_Folder="/tmp/tmp"
 	local Tmp_Fifo_File
-	local Thread_Num=30
+	local Thread_Num=50
 	local i=0
 	local PAGES
 	local TOTAL_PAGE
