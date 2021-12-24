@@ -311,4 +311,4 @@ function main() {
 	echo "查询完成，耗时 $((${End_Time} - ${Start_Time})) 秒	$(echo -e ${Pref_Time} | tr '_' ' ')(Asia/Shanghai)"
 }
 
-main "Software Engineer" "上海" "/tmp/search_result_final"
+main "Software Engineer" "全国" "/tmp/search_result_final"
