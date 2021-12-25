@@ -283,7 +283,10 @@ function main() {
 	local Start_Time=$(date -u +%s)
 	local End_Time
 
-	echo "$1" "$2" "$3" "$4"
+	if [[ -z "$1" || -z "$2" || -z "$3" || -z "$4" ]]; then
+		echo "参数错误!!!"
+		return 1
+	fi
 
 	rm -rf "${Result_Folder}" && mkdir "${Result_Folder}"
 	area_list "${Area_List_File}"
