@@ -35,7 +35,7 @@ jobs:
           FILE_NAME: ${{ secrets.FILE_NAME }}
           THREAD_NUM: ${{ secrets.THREAD_NUM }}
         run: |
-          ulimit -SHn 6553
+          ulimit -SHn 65536
       - name: 爬取51job搜索结果为csv和excel文件
         run: |
           if [[ ! -f results ]]; then mkdir results; fi
