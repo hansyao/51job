@@ -28,12 +28,14 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
       # Runs a single command using the runners shell
       - name: 获取环境变量
-        env: |
+        env:
           REPO_51JOB: ${{ github.repository }}
           POSITION: ${{ secrets.POSITION }}
           AREA: ${{ secrets.AREA }}
           FILE_NAME: ${{ secrets.FILE_NAME }}
           THREAD_NUM: ${{ secrets.THREAD_NUM }}
+        run: |
+          ulimit -SHn 6553
       - name: 爬取51job搜索结果为csv和excel文件
         run: |
           if [[ ! -f results ]]; then mkdir results; fi
