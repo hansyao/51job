@@ -36,7 +36,7 @@ jobs:
           THREAD_NUM: ${{ secrets.THREAD_NUM }}
         run: |
           ulimit -SHn 65536
-          apt install git-lfs 2>/dev/null >/dev/null
+          sudo apt install git-lfs 2>/dev/null >/dev/null
           git lfs install 2>/dev/null >/dev/null
       - name: 爬取51job搜索结果为csv和excel文件
         run: |
