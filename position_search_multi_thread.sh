@@ -283,6 +283,7 @@ function main() {
 	local Start_Time=$(date -u +%s)
 	local End_Time
 
+	echo "$1" "$2" "$3" "$4"
 
 	rm -rf "${Result_Folder}" && mkdir "${Result_Folder}"
 	area_list "${Area_List_File}"
