@@ -288,6 +288,8 @@ function main() {
 		return 1
 	fi
 
+	echo -e ${Key_Words} ${Area} ${Final_Result} ${THREAD_NUM}
+
 	rm -rf "${Result_Folder}" && mkdir "${Result_Folder}"
 	area_list "${Area_List_File}"
 
