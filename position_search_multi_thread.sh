@@ -312,8 +312,9 @@ function main() {
 	echo -e "合并查询结果并转换成xlsx格式"
 	Pref_Time="$(TZ="Asia/Shanghai" date "+%F_%s")"
 	echo -e '"区域","招聘条件","行业","公司规模","是否有效","职位","公司名称","薪资","福利","工作地点","公司类型","工作年限要求","学历要求","是否实习生","发布日期","职位网址","查询时间戳"' >"${Final_Result}_${Pref_Time}.csv"
-	cat $(ls "${Result_Folder}"  | sort -n | awk '{print ''"'"${Result_Folder}/"'"'' $0}') >>"${Final_Result}_${Pref_Time}.csv"
+	cat $(ls "${Result_Folder}"  | sort -n | awk '{print ''"'"${Result_Folder}/"'"'' $0}') >>"${Pref_Time}_${Final_Result}.csv"
 	./csv2xlsx -o "${Pref_Time}_${Final_Result}.xlsx" "${Pref_Time}_${Final_Result}.csv"
+	iconv -f UTF-8 -t UTF-8 GB18030
 	rm -rf "${Result_Folder}"
 	End_Time=$(date -u +%s)
 	echo "查询完成，耗时 $((${End_Time} - ${Start_Time})) 秒	$(TZ="Asia/Shanghai" date "+%F %H:%M:%S")(Asia/Shanghai)"
