@@ -28,7 +28,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
       # Runs a single command using the runners shell
       - name: 获取环境变量
-        env:
+        env: |
           REPO_51JOB: ${{ github.repository }}
           POSITION: ${{ secrets.POSITION }}
           AREA: ${{ secrets.AREA }}
