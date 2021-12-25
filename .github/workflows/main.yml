@@ -38,7 +38,7 @@ jobs:
           ulimit -SHn 65536
       - name: 爬取51job搜索结果为csv和excel文件
         run: |
-          if [[ ! -f results ]]; then mkdir results; fi
+          if [[ ! -d results ]]; then mkdir results; fi
           ./position_search_multi_thread.sh "${{ secrets.POSITION }}" "${{ secrets.AREA }}" "results/${{ secrets.FILE_NAME }}" ${{ secrets.THREAD_NUM }}
       - name: 保存搜索结果
         run: |
