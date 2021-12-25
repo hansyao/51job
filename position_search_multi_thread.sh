@@ -274,7 +274,8 @@ function multi_thread_search() {
 function main() {
 	local Key_Words=$(echo -e "$1" | sed "s/[ ][ ]*/+/g")
 	local Area=$(echo -e "$2" | tr "," "|" | sed "s/[ ][ ]*//g")
-	local Final_Result="$3"
+	local Final_Result_Folder=$(echo "$3" | awk -F "/" 'NF{NF-=1};1')
+	local Final_Result=$(echo "$3" | awk -F "/" '{print $NF}')
 	local THREAD_NUM=$4
 	local Area_List_File='/tmp/area_list.txt'
 	local Result_Folder='/tmp/51job_result_folder'
@@ -288,7 +289,8 @@ function main() {
 		return 1
 	fi
 
-	echo -e ${Key_Words} ${Area} ${Final_Result} ${THREAD_NUM}
+	if [[ -z "${Final_Result_Folder}" ]]; then Final_Result_Folder="`pwd`"; fi
+	if [[ ! -d "${Final_Result_Folder}" ]]; then mkdir -p "${Final_Result_Folder}"; fi
 
 	rm -rf "${Result_Folder}" && mkdir "${Result_Folder}"
 	area_list "${Area_List_File}"
@@ -311,11 +313,11 @@ function main() {
 
 	echo -e "合并查询结果并转换成xlsx格式"
 	Pref_Time="$(TZ="Asia/Shanghai" date "+%F_%s")"
-	echo -e '"区域","招聘条件","行业","公司规模","是否有效","职位","公司名称","薪资","福利","工作地点","公司类型","工作年限要求","学历要求","是否实习生","发布日期","职位网址","查询时间戳"' >"${Final_Result}_${Pref_Time}.csv"
-	cat $(ls "${Result_Folder}"  | sort -n | awk '{print ''"'"${Result_Folder}/"'"'' $0}') >>"${Pref_Time}_${Final_Result}.csv"
-	./csv2xlsx -o "${Pref_Time}_${Final_Result}.xlsx" "${Pref_Time}_${Final_Result}.csv"
-	iconv -f UTF8 -t GB18030 <"${Pref_Time}_${Final_Result}.csv" >'/tmp/tmp_result.csv'
-	mv '/tmp/tmp_result.csv' "${Pref_Time}_${Final_Result}.csv"
+	echo -e '"区域","招聘条件","行业","公司规模","是否有效","职位","公司名称","薪资","福利","工作地点","公司类型","工作年限要求","学历要求","是否实习生","发布日期","职位网址","查询时间戳"' >"${Final_Result_Folder}/${Pref_Time}_${Final_Result}.csv"
+	cat $(ls "${Result_Folder}"  | sort -n | awk '{print ''"'"${Result_Folder}/"'"'' $0}') >>"${Final_Result_Folder}/${Pref_Time}_${Final_Result}.csv"
+	./csv2xlsx -o "${Final_Result_Folder}/${Pref_Time}_${Final_Result}.xlsx" "${Final_Result_Folder}/${Pref_Time}_${Final_Result}.csv"
+	iconv -f UTF8 -t GB18030 <"${Final_Result_Folder}/${Pref_Time}_${Final_Result}.csv" >'/tmp/tmp_result.csv'
+	mv '/tmp/tmp_result.csv' "${Final_Result_Folder}/${Pref_Time}_${Final_Result}.csv"
 	rm -rf "${Result_Folder}"
 	End_Time=$(date -u +%s)
 	echo "查询完成，耗时 $((${End_Time} - ${Start_Time})) 秒	$(TZ="Asia/Shanghai" date "+%F %H:%M:%S")(Asia/Shanghai)"
