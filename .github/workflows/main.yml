@@ -39,12 +39,12 @@ jobs:
       - name: 爬取51job搜索结果为csv和excel文件
         run: |
           if [[ ! -f results ]]; then mkdir results; fi
-          ./position_search_multi_thread.sh "${POSITION}" "${AREA}" "results/${FILE_NAME}" ${THREAD_NUM}
+          ./position_search_multi_thread.sh "${{ secrets.POSITION }}" "${{ secrets.AREA }}" "results/${{ secrets.FILE_NAME }}" ${{ secrets.THREAD_NUM }}
       - name: 保存搜索结果
         run: |
           git config --global user.email '<>'
           git config --global user.name ${GITHUB_ACTOR}
           git pull
           git add results/
-          git commit -m "搜索结果更新(${POSITION}+${AREA})"
+          git commit -m "搜索结果更新(${{ secrets.POSITION }}+${{ secrets.AREA }})"
           git push -u origin master
