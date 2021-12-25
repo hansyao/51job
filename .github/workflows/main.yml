@@ -27,9 +27,22 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
       # Runs a single command using the runners shell
-      - name: 爬取51job职位并转换为excel文件
+      - name: 获取环境变量
+        env:
+          REPO_51JOB: ${{ github.repository }}
+          POSITION: ${{ secrets.POSITION }}
+          AREA: ${{ secrets.AREA }}
+          FILE_NAME: ${{ secrets.FILE_NAME }}
+          THREAD_NUM: ${{ secrets.THREAD_NUM }}
+      - name: 爬取51job搜索结果为csv和excel文件
         run: |
-          sed -i 's/\/tmp\///g' position_search_multi_thread.sh
-          ./position_search_multi_thread.sh
-
-
+          if [[ ! -f results ]]; then mkdir results; fi
+          ./position_search_multi_thread.sh "${POSITION}" "${AREA}" "results/${FILE_NAME}" ${THREAD_NUM}
+      - name: 保存搜索结果
+        run: |
+          git config --global user.email '<>'
+          git config --global user.name ${GITHUB_ACTOR}
+          git pull
+          git add results/
+          git commit -m "搜索结果更新(${POSITION}+${AREA})"
+          git push -u origin master

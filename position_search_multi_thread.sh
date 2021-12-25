@@ -187,9 +187,9 @@ function multi_thread_search() {
 	local AREA_CODE=$2
 	local RESULT_FILE=$3
 	local j=$4
+	local Thread_Num=$5
 	local Tmp_Folder="/tmp/tmp"
 	local Tmp_Fifo_File
-	local Thread_Num=50
 	local i=0
 	local PAGES
 	local TOTAL_PAGE
@@ -275,12 +275,14 @@ function main() {
 	local Key_Words=$(echo -e "$1" | sed "s/[ ][ ]*/+/g")
 	local Area=$(echo -e "$2" | tr "," "|" | sed "s/[ ][ ]*//g")
 	local Final_Result="$3"
+	local THREAD_NUM=$4
 	local Area_List_File='/tmp/area_list.txt'
 	local Result_Folder='/tmp/51job_result_folder'
 	local i=0
 	local Pref_Time
 	local Start_Time=$(date -u +%s)
 	local End_Time
+
 
 	rm -rf "${Result_Folder}" && mkdir "${Result_Folder}"
 	area_list "${Area_List_File}"
@@ -295,7 +297,7 @@ function main() {
 	do
 		Area_Code=$(echo -e "${Line}" | awk '{print $1}' | sed "s/:$//g")
 		if [[ -z "${Area_Code}" ]]; then echo "区域 ${Line} 无效" continue; fi
-		multi_thread_search "${Key_Words}" "${Area_Code}" "${Result_Folder}/${i}_result_file.csv" "${i}"
+		multi_thread_search "${Key_Words}" "${Area_Code}" "${Result_Folder}/${i}_result_file.csv" "${i}" "${THREAD_NUM}"
 		sed -i "1,2d" "${Result_Folder}/${i}_result_file.csv"
 		echo
 		let i++
@@ -311,4 +313,4 @@ function main() {
 	echo "查询完成，耗时 $((${End_Time} - ${Start_Time})) 秒	$(echo -e ${Pref_Time} | tr '_' ' ')(Asia/Shanghai)"
 }
 
-main "Software Engineer" "全国" "/tmp/search_result_final"
+main "$1" "$2" "$3" "$4"
