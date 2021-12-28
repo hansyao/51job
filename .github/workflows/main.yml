@@ -27,7 +27,12 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
       # Runs a single command using the runners shell
-      - name: 获取环境变量
+      - name: 配置系统环境
+        run: |
+          ulimit -SHn 65536
+          sudo apt install git-lfs 2>/dev/null >/dev/null
+          git lfs install 2>/dev/null >/dev/null
+      - name: 爬取51job搜索结果为csv和excel文件
         env:
           REPO_51JOB: ${{ github.repository }}
           POSITION: ${{ secrets.POSITION }}
@@ -41,11 +46,6 @@ jobs:
           REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
           PROXY_URL: ${{ secrets.PROXY_URL }}
           DL_URL: ${{ secrets.DL_URL }}
-        run: |
-          ulimit -SHn 65536
-          sudo apt install git-lfs 2>/dev/null >/dev/null
-          git lfs install 2>/dev/null >/dev/null
-      - name: 爬取51job搜索结果为csv和excel文件
         run: |
           if [[ ! -d results ]]; then mkdir results; fi
           ./position_search_multi_thread.sh "${{ secrets.POSITION }}" "${{ secrets.AREA }}" "results/${{ secrets.FILE_NAME }}" ${{ secrets.THREAD_NUM }} "${{ secrets.SEND_TO }}"
