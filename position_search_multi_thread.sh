@@ -301,7 +301,7 @@ function email_body() {
 	<div>搜索耗时: ${Duration} 秒</div>
 	<br>
 	<div>下载地址:</div>
-	<a href="${Dl_Url}">${File_Name1}</a>  
+	<a href="${Dl_Url1}">${File_Name1}</a>  
 	<a href="${Dl_Url2}">${File_Name2}</a>
 	</div>
 </div>
