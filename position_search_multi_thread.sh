@@ -278,8 +278,8 @@ function email_body() {
 	local Duration="$4"
 	local Dl_Url1="$5"
 	local Dl_Url2="$6"
-	local Body_File="$7"
-	local Result_Count="$8"
+	local Result_Count="$7"
+	local Body_File="$8"
 	local File_Name1=$(echo -e "${5}" | awk -F '/' '{print $NF}')
 	local File_Name2=$(echo -e "${6}" | awk -F '/' '{print $NF}')
 
