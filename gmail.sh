@@ -110,7 +110,7 @@ do
 		?) help_this; exit;;
 	esac
 done
-
+env | grep CLIENT_ID
 echo "Send_To: $Send_To"
 echo "Cc_To: $Cc_To"
 echo "Bcc_to: $Bcc_to"
