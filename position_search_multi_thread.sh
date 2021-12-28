@@ -271,23 +271,66 @@ function multi_thread_search() {
 	echo "$(jq -r '.searched_condition' </tmp/search_result.json) 查询完成，耗时 $((${End_Time} - ${Start_Time})) 秒"
 }
 
+function email_body() {
+	local Condition="$1"
+	local Start_Time="$2"
+	local End_Time="$3"
+	local Duration="$4"
+	local Dl_Url1="$5"
+	local Dl_Url2="$6"
+	local Body_File="$7"
+	local File_Name1=$(echo -e "${5}" | awk -F '/' '{print $NF}')
+	local File_Name2=$(echo -e "${6}" | awk -F '/' '{print $NF}')
+
+	cat >"${Body_File}"<<EOF
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<link href="https://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" />
+	<title>51Job职位搜索</title>
+</head>
+<div class="container col-auto">
+	<div><img src="https://img01.51jobcdn.com/im/2016/logo/logo_blue.png"></div>
+	<br>
+	<p>
+	<div dir="ltr">搜索条件: ${Condition}</div>
+	<br>
+	<div>开始时间: ${Start_Time}</div>
+	<div>结束时间: ${End_Time}</div>
+	<div>搜索耗时: ${Duration} 秒</div>
+	<br>
+	<div>下载地址:</div>
+	<a href="${Dl_Url}">${File_Name1}</a>  
+	<a href="${Dl_Url2}">${File_Name2}</a>
+	</div>
+</div>
+</p>
+</div>
+EOF
+}
+
 function main() {
 	local Key_Words=$(echo -e "$1" | sed "s/[ ][ ]*/+/g")
 	local Area=$(echo -e "$2" | tr "," "|" | sed "s/[ ][ ]*//g")
 	local Final_Result_Folder=$(echo "$3" | awk -F "/" 'NF{NF-=1};1')
 	local Final_Result=$(echo "$3" | awk -F "/" '{print $NF}')
 	local THREAD_NUM=$4
+	local SEND_TO="$5"
 	local Area_List_File='/tmp/area_list.txt'
 	local Result_Folder='/tmp/51job_result_folder'
 	local i=0
 	local Pref_Time
 	local Start_Time=$(date -u +%s)
 	local End_Time
+	local Dl_Url="${DL_URL}"
 
-	if [[ -z "$1" || -z "$2" || -z "$3" || -z "$4" ]]; then
+	if [[ -z "$1" || -z "$2" || -z "$3" || -z "$4" || -z "$5" ]]; then
 		echo "参数错误!!!"
 		return 1
 	fi
+
+	if [[ ${THREAD_NUM} -eq 0 ]]; then THREAD_NUM=50; fi
 
 	if [[ -z "${Final_Result_Folder}" ]]; then Final_Result_Folder="`pwd`"; fi
 	if [[ ! -d "${Final_Result_Folder}" ]]; then mkdir -p "${Final_Result_Folder}"; fi
@@ -321,6 +364,22 @@ function main() {
 	rm -rf "${Result_Folder}"
 	End_Time=$(date -u +%s)
 	echo "查询完成，耗时 $((${End_Time} - ${Start_Time})) 秒	$(TZ="Asia/Shanghai" date "+%F %H:%M:%S")(Asia/Shanghai)"
+
+	#构建通知信息
+	Dl_Url1="${Dl_Url}/${Pref_Time}_${Final_Result}.csv"
+	Dl_Url2="${Dl_Url}/${Pref_Time}_${Final_Result}.xlsx"
+	email_body "${Key_Words}+$(echo -e "$2" | tr "," "|" | sed "s/[ ][ ]*//g")" \
+		"$(TZ="Asia/Shanghai" date -d @${Start_Time} "+%F %H:%M:%S")" \
+		"$(TZ="Asia/Shanghai" date -d @${End_Time} "+%F %H:%M:%S")" \
+		"$((${End_Time} - ${Start_Time}))" \
+		"${Dl_Url1}" \
+		"${Dl_Url2}" \
+		'/tmp/email_content'
+
+	#发送email
+	./gmail.sh -s "${SEND_TO}" \
+		-a "51job search result" \
+		-x "$(cat '/tmp/email_content')"
 }
 
-main "$1" "$2" "$3" "$4"
+main "$1" "$2" "$3" "$4" "$5"
