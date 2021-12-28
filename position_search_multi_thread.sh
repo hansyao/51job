@@ -279,6 +279,7 @@ function email_body() {
 	local Dl_Url1="$5"
 	local Dl_Url2="$6"
 	local Body_File="$7"
+	local Result_Count="$8"
 	local File_Name1=$(echo -e "${5}" | awk -F '/' '{print $NF}')
 	local File_Name2=$(echo -e "${6}" | awk -F '/' '{print $NF}')
 
@@ -296,13 +297,14 @@ function email_body() {
 	<p>
 	<div dir="ltr">搜索条件: ${Condition}</div>
 	<br>
+	<div>共查询到 ${Result_Count} 条记录</div>
 	<div>开始时间: ${Start_Time}</div>
 	<div>结束时间: ${End_Time}</div>
 	<div>搜索耗时: ${Duration} 秒</div>
 	<br>
 	<div>下载地址:
 		<a href="${Dl_Url1}">csv格式</a>
-		<a href="${Dl_Url2}">xlxs格式</a>
+		<a href="${Dl_Url2}">xlsx格式</a>
 	</div>
 	<div>历史查询结果
 		<a href="https://github.com/hansyao/51job/tree/master/results">https://github.com/hansyao/51job/tree/master/results</a>
@@ -325,6 +327,7 @@ function main() {
 	local Start_Time=$(date -u +%s)
 	local End_Time
 	local Dl_Url="${DL_URL}"
+	local Result_Count
 
 	if [[ -z "$1" || -z "$2" || -z "$3" || -z "$4" || -z "$5" ]]; then
 		echo "参数错误!!!"
@@ -369,6 +372,7 @@ function main() {
 	#构建通知信息
 	Dl_Url1="${Dl_Url}/${Pref_Time}_${Final_Result}.csv"
 	Dl_Url2="${Dl_Url}/${Pref_Time}_${Final_Result}.xlsx"
+	Result_Count=$(($(cat "${Final_Result_Folder}/${Pref_Time}_${Final_Result}.csv" | wc -l) - 1))
 	email_body "($(echo -e "${Key_Words}" | tr '+' ' '))+$(echo -e "$2" | tr "," "|" | sed "s/[ ][ ]*//g")" \
 		"$(TZ="Asia/Shanghai" date -d @${Start_Time} "+%F %H:%M:%S")" \
 		"$(TZ="Asia/Shanghai" date -d @${End_Time} "+%F %H:%M:%S")" \
