@@ -369,7 +369,7 @@ function main() {
 	#构建通知信息
 	Dl_Url1="${Dl_Url}/${Pref_Time}_${Final_Result}.csv"
 	Dl_Url2="${Dl_Url}/${Pref_Time}_${Final_Result}.xlsx"
-	email_body "$(echo -e "${Key_Words}" | tr -d '+')+$(echo -e "$2" | tr "," "|" | sed "s/[ ][ ]*//g")" \
+	email_body "($(echo -e "${Key_Words}" | tr -d '+'))+$(echo -e "$2" | tr "," "|" | sed "s/[ ][ ]*//g")" \
 		"$(TZ="Asia/Shanghai" date -d @${Start_Time} "+%F %H:%M:%S")" \
 		"$(TZ="Asia/Shanghai" date -d @${End_Time} "+%F %H:%M:%S")" \
 		"$((${End_Time} - ${Start_Time}))" \
