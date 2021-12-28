@@ -300,10 +300,14 @@ function email_body() {
 	<div>结束时间: ${End_Time}</div>
 	<div>搜索耗时: ${Duration} 秒</div>
 	<br>
-	<div>下载地址:</div>
+	<div>下载地址:
 	<a href="${Dl_Url1}">${File_Name1}</a>  
 	<a href="${Dl_Url2}">${File_Name2}</a>
 	</div>
+	<div>历史查询结果:
+	<a href="https://github.com/hansyao/51job/tree/master/results"></a>
+	</div>
+
 </div>
 </p>
 </div>
