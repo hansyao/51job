@@ -297,7 +297,7 @@ function email_body() {
 	<p>
 	<div dir="ltr">搜索条件: ${Condition}</div>
 	<br>
-	<div>共查询到 ${Result_Count} 条记录</div>
+	<div>共查询到: ${Result_Count} 条记录</div>
 	<div>开始时间: ${Start_Time}</div>
 	<div>结束时间: ${End_Time}</div>
 	<div>搜索耗时: ${Duration} 秒</div>
@@ -379,6 +379,7 @@ function main() {
 		"$((${End_Time} - ${Start_Time}))" \
 		"${Dl_Url1}" \
 		"${Dl_Url2}" \
+		"${Result_Count}" \
 		'/tmp/email_content'
 
 	#发送email
