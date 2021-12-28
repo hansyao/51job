@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -x
+
 CLIENT_ID="${CLIENT_ID}"
 SECRET_ID="${SECRET_ID}"
 GMAIL_API_KEY="${GMAIL_API_KEY}"
