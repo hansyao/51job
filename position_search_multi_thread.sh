@@ -301,15 +301,12 @@ function email_body() {
 	<div>搜索耗时: ${Duration} 秒</div>
 	<br>
 	<div>下载地址:
-	<a href="${Dl_Url1}">${File_Name1}</a>  
-	<a href="${Dl_Url2}">${File_Name2}</a>
+		<a href="${Dl_Url1}">csv格式</a>
+		<a href="${Dl_Url2}">xlxs格式</a>
 	</div>
-	<div>历史查询结果:
-	<a href="https://github.com/hansyao/51job/tree/master/results"></a>
+	<div>历史查询结果
+		<a href="https://github.com/hansyao/51job/tree/master/results">https://github.com/hansyao/51job/tree/master/results</a>
 	</div>
-
-</div>
-</p>
 </div>
 EOF
 }
