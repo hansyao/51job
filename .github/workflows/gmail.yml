@@ -1,0 +1,46 @@
+# This is a basic workflow to help you get started with Actions
+
+name: send mail
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+#   push:
+#     branches: [ master ]
+#   pull_request:
+#     branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+      # Runs a single command using the runners shell
+      - name: 获取环境变量
+        env:
+          SEND_TO: ${{ secrets.SEND_TO }}
+          FILE_NAME: ${{ secrets.FILE_NAME }}
+          THREAD_NUM: ${{ secrets.THREAD_NUM }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          SECRET_ID: ${{ secrets.SECRET_ID }}
+          GMAIL_API_KEY: ${{ secrets.GMAIL_API_KEY }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+          DL_URL: ${{ secrets.DL_URL }}
+        run: |
+          ulimit -SHn 65536
+      - name: send by gmail api
+        run: |
+          if [[ ! -d results ]]; then mkdir results; fi
+          ./gmail.sh 
