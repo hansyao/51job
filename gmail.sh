@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -x
 
@@ -115,8 +115,6 @@ echo "Send_To: $Send_To"
 echo "Cc_To: $Cc_To"
 echo "Bcc_to: $Bcc_to"
 echo "Subject: $Subject"
-# echo "Content: $Content"
-# echo "Atta: $Atta"
 
 ACCESS_TOKEN=$(get_access_token | jq -r '.access_token')
 get_body "${TEMP_DIR}/email_body"
