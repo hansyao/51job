@@ -25,7 +25,7 @@ urlencode() {
 }
 
 function get_redirect_script() {
-	cat >${TEMP_DIR}/google.html<<EOF
+	cat >"${TEMP_DIR}/google.html"<<EOF
 <!DOCTYPE html>
 <html>
 <head>
