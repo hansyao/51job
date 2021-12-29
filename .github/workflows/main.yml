@@ -54,6 +54,6 @@ jobs:
           git config --global user.email '<>'
           git config --global user.name ${GITHUB_ACTOR}
           git pull
-          git add results/
+          git add -f results/
           git commit -m "搜索结果更新(${{ secrets.POSITION }}+${{ secrets.AREA }})"
           git push -u origin master
