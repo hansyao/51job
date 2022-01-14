@@ -163,8 +163,10 @@ function position_search() {
 		fi
 
 		# 转码并格式化
-		cat "${TMP_RESPONSE}" | jq -r '.' 2>/dev/null \
+		cat "${TMP_RESPONSE}" | base64 -w 0 | iconv -f GB18030 -t UTF-8 | base64 -d | jq -r '.' 2>/dev/null \
 			>"${RESP_BODY}"
+# 		iconv -f GB18030 -t UTF-8 <"${TMP_RESPONSE}" | jq -r '.' 2>/dev/null \
+# 			>"${RESP_BODY}"
 		if [[ -z "$(cat "${RESP_BODY}" 2>/dev/null)" ]];then
 			# 检查是否有加密并解密获取acw_sc__v2令牌
 			arg1=$(get_arg1 "${RESP_HEADER}" "${TMP_RESPONSE}")
