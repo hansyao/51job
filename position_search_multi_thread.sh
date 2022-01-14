@@ -69,7 +69,7 @@ function get_arg1() {
 
 	acw_tc=$(cat "${Header}" 2>/dev/null | grep -i "^Set-Cookie:" | grep 'acw_tc=')
 	if [[ -n "${acw_tc}" ]]; then
-		arg1=$(cat "${Body}" | iconv -f GB18030 -t UTF-8 \
+		arg1=$(cat "${Body}" \
 		| grep "^[ ]*var[ ]*arg1=" | awk -F\' '{print $2}')
 	fi
 
